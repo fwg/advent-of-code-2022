@@ -18,6 +18,7 @@ function score($theirs, $ours) {
         'Y' => 'A', // paper beats rock
         'Z' => 'B', // scissor beats paper
     ]);
+    $shape = ['X' => 1, 'Y' => 2, 'Z' => 3];
 
     // default we lose
     $score = 0;
@@ -26,7 +27,7 @@ function score($theirs, $ours) {
     // we win
     if ($ours == $beats[$theirs]) $score = 6;
 
-    return $score + ['X' => 1, 'Y' => 2, 'Z' => 3][$ours];
+    return $score + $shape[$ours];
 }
 
 function score2($theirs, $end) {
@@ -41,17 +42,13 @@ function score2($theirs, $end) {
         'C' => 'B', // scissor beats paper
     ]);
     $shape = ['A' => 1, 'B' => 2, 'C' => 3];
+
     // default: we play a draw
     $play = $theirs;
-
     // we need to win
-    if ($result[$end] == 6) {
-        $play = $beats[$theirs];
-    }
+    if ($result[$end] == 6) $play = $beats[$theirs];
     // we need to lose
-    if ($result[$end] == 0) {
-        $play = array_flip($beats)[$theirs];
-    }
+    if ($result[$end] == 0) $play = array_flip($beats)[$theirs];
 
     return $result[$end] + $shape[$play];
 }
