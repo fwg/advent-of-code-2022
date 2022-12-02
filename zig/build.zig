@@ -12,7 +12,7 @@ pub fn build(b: *std.build.Builder) !void {
     const mode = b.standardReleaseOptions();
 
     const days  = [_][]const u8 {
-        "day1",
+        "day01",
     };
     const run_step = b.step("run", "Run the app");
     const test_step = b.step("test", "Run unit tests");
