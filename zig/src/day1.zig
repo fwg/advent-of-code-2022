@@ -35,15 +35,14 @@ pub fn main() !void {
         try calories.append(try parseInt(i32, line.?, 10));
     }
 
-    var max: i32 = 0;
+    var maxes = [3]i32 {0, 0, 0};
 
     for (elves.items) |elf| {
-        if (elf > max) {
-            max = elf;
-        }
+        insertMax(&maxes, elf);
     }
 
-    print("max elf calories: {}\n", .{max});
+    print("max elf calories: {}, {}, {}\n", .{maxes[0], maxes[1], maxes[2]});
+    print("max sum: {}\n", .{maxes[0] + maxes[1] + maxes[2]});
 }
 
 fn sum(numbers: []const i32) i32 {
@@ -52,6 +51,24 @@ fn sum(numbers: []const i32) i32 {
         result += x;
     }
     return result;
+}
+
+fn insertMax(maxes: []i32, n: i32) void {
+    if (n <= maxes[0]) {
+        return;
+    }
+    maxes[0] = n;
+    var i: usize = 0;
+    var t: i32 = undefined;
+
+    while (i < maxes.len - 1) {
+        if (maxes[i] > maxes[i + 1]) {
+            t = maxes[i + 1];
+            maxes[i + 1] = maxes[i];
+            maxes[i] = t;
+        }
+        i += 1;
+    }
 }
 
 test "simple test" {
