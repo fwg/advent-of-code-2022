@@ -10,7 +10,7 @@ pub fn main() !void {
     defer arena.deinit();
     const allocator = arena.allocator();
 
-    const stdin: std.fs.File = try std.fs.cwd().openFile("../input/day1.txt", .{});
+    const stdin: std.fs.File = try std.fs.cwd().openFile("../input/day01.txt", .{});
     const input = stdin.reader();
 
     var calories = std.ArrayList(i32).init(allocator);

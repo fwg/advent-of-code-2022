@@ -1,6 +1,6 @@
 <?php
 
-$input = file_get_contents(__DIR__ . '/../input/day1.txt');
+$input = file_get_contents(__DIR__ . '/../input/day01.txt');
 $elves = explode("\n\n", $input);
 $max_calories = 0;
 
