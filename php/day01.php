@@ -29,6 +29,8 @@ echo PHP_EOL;
 
 function sum($xs) {
     $s = 0;
-    foreach ($xs as $x) $s += $x;
+    foreach ($xs as $x) {
+        $s += $x;
+    }
     return $s;
 }
