@@ -7,7 +7,7 @@ const Move = enum(u8) {
     rock = 'A',
     paper = 'B',
     scissors = 'C',
-    invalid,
+    unknown,
 };
 
 const Result = enum(u8) {
@@ -26,7 +26,7 @@ fn willLoseAgainst(m: Move) Move {
         .rock => .scissors,
         .paper => .rock,
         .scissors => .paper,
-        .invalid => .invalid
+        .unknown => .unknown
     };
 }
 
@@ -35,12 +35,12 @@ fn willWinAgainst(m: Move) Move {
         .rock => .paper,
         .paper => .scissors,
         .scissors => .rock,
-        .invalid => .invalid
+        .unknown => .unknown
     };
 }
 
 fn beats(m1: Move, m2: Move) bool {
-    return !(m1 == .invalid or m2 == .invalid) and
+    return !(m1 == .unknown or m2 == .unknown) and
            m1 == willWinAgainst(m2);
 }
 
@@ -48,14 +48,14 @@ fn move(m: u8) Move {
     if (m >= @enumToInt(Move.rock) and m <= @enumToInt(Move.scissors)) {
         return @intToEnum(Move, m);
     }
-    return .invalid;
+    return .unknown;
 }
 
 fn moveXYZ(m: u8) Move {
     if (m == 'X') return .rock;
     if (m == 'Y') return .paper;
     if (m == 'Z') return .scissors;
-    return .invalid;
+    return .unknown;
 }
 
 fn resultXYZ(m: u8) Result {
@@ -69,7 +69,7 @@ fn scoreMove(m: Move) u8 {
         .rock => 1,
         .paper => 2,
         .scissors => 3,
-        .invalid => 0
+        .unknown => 0
     };
 }
 
@@ -100,15 +100,15 @@ pub fn main() !void {
         // each line is "[ABC] [XYZ]"
         var g: Game = .{
             .theirs = move(buf[0]),
-            .ours = moveXYZ(buf[2])
+            .ours = .unknown
         };
 
         // part one: score the game as if XYZ is our move
+        g.ours = moveXYZ(buf[2]);
         sumPart1 += scoreGame(g) + scoreMove(g.ours);
 
         // part two: score the game as if XYZ is the desired score
-        const r: Result = resultXYZ(buf[2]);
-        g.ours = switch (r) {
+        g.ours = switch (resultXYZ(buf[2])) {
             .win => willWinAgainst(g.theirs),
             .draw => g.theirs,
             .loss => willLoseAgainst(g.theirs)
