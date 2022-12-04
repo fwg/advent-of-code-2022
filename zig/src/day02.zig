@@ -97,7 +97,7 @@ pub fn main() !void {
             break;
         }
 
-        // each line is sth like "A X"
+        // each line is "[ABC] [XYZ]"
         var g: Game = .{
             .theirs = move(buf[0]),
             .ours = moveXYZ(buf[2])
