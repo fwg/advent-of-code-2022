@@ -25,3 +25,8 @@ pub fn insertMax(maxes: []i32, n: i32) void {
         i += 1;
     }
 }
+
+pub const Answer = struct {
+    part1: u32,
+    part2: u32,
+};

@@ -79,43 +79,60 @@ fn scoreGame(g: Game) u8 {
     return @enumToInt(Result.loss);
 }
 
-pub fn main() !void {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-    const allocator = arena.allocator();
-    const stdin: std.fs.File = try std.fs.cwd().openFile("../input/day02.txt", .{});
-    const input = stdin.reader();
-    var buf: []u8 = try allocator.alloc(u8, 64);
-
+pub fn day02(in: []const u8) !common.Answer {
+    var lines: std.mem.SplitIterator(u8) = std.mem.split(u8, in, "\n");
     var sumPart1: u32 = 0;
     var sumPart2: u32 = 0;
+    var line = lines.next();
 
-    while (true) {
-        const line = try input.readUntilDelimiterOrEof(buf, '\n');
-
-        if (line == null) {
-            break;
-        }
-
+    while (line != null and line.?.len > 0) {
         // each line is "[ABC] [XYZ]"
         var g: Game = .{
-            .theirs = move(buf[0]),
+            .theirs = move(line.?[0]),
             .ours = .unknown
         };
 
         // part one: score the game as if XYZ is our move
-        g.ours = moveXYZ(buf[2]);
+        g.ours = moveXYZ(line.?[2]);
         sumPart1 += scoreGame(g) + scoreMove(g.ours);
 
         // part two: score the game as if XYZ is the desired score
-        g.ours = switch (resultXYZ(buf[2])) {
+        g.ours = switch (resultXYZ(line.?[2])) {
             .win => willWinAgainst(g.theirs),
             .draw => g.theirs,
             .loss => willLoseAgainst(g.theirs)
         };
         sumPart2 += scoreGame(g) + scoreMove(g.ours);
+
+        line = lines.next();
     }
 
-    print("rock-paper-scissors game score 1: {}\n", .{sumPart1});
-    print("rock-paper-scissors game score 2: {}\n", .{sumPart2});
+    return common.Answer{
+        .part1 = sumPart1,
+        .part2 = sumPart2
+    };
+}
+
+pub fn main() !void {
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const allocator = arena.allocator();
+
+    const stdin: std.fs.File = try std.fs.cwd().openFile("../input/day02.txt", .{});
+    const input = try stdin.reader().readAllAlloc(allocator, 64 * 1024);
+
+    const answer = try day02(input);
+    print("rock-paper-scissors game score 1: {}\n", .{answer.part1});
+    print("rock-paper-scissors game score 2: {}\n", .{answer.part2});
+}
+
+test "day 02" {
+    const input =
+        \\A Y
+        \\B X
+        \\C Z
+    ;
+    const answer = try day02(input);
+    try std.testing.expectEqual(@as(u32, 15), answer.part1);
+    try std.testing.expectEqual(@as(u32, 12), answer.part2);
 }
