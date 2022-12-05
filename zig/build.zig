@@ -14,6 +14,7 @@ pub fn build(b: *std.build.Builder) !void {
     const days  = [_][]const u8 {
         "day01",
         "day02",
+        "day03",
     };
     const run_step = b.step("run", "Run the app");
     const test_step = b.step("test", "Run unit tests");
