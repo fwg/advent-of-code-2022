@@ -48,5 +48,10 @@ pub fn build(b: *std.build.Builder) !void {
         exe_test.setTarget(target);
         exe_test.setBuildMode(mode);
         test_step.dependOn(&exe_test.step);
+
+        // cool, we can also add its own step for the day
+        const description = try std.fmt.bufPrint(bufSlice, "Run {s}", .{ day });
+        const run_day_step = b.step(day, description);
+        run_day_step.dependOn(&exe_run.step);
     }
 }
