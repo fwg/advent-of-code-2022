@@ -1,3 +1,4 @@
+// This is my
 use std::fs;
 use std::path::PathBuf;
 
@@ -10,7 +11,7 @@ fn main() {
     snack_list.for_each(|elf| {
         let mut sum = elf
             .split("\n")
-            .map(|n| n.parse::<u32>().unwrap_or(0))
+            .map(|n| n.parse().unwrap_or(0))
             .sum();
 
         let mut i = 0;
