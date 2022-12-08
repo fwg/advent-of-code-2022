@@ -1,4 +1,4 @@
-// This is my
+// This is my first rust program!
 use std::fs;
 use std::path::PathBuf;
 
