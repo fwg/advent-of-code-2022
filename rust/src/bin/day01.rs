@@ -9,10 +9,7 @@ fn main() {
     let mut top_three = [0, 0, 0];
 
     snack_list.for_each(|elf| {
-        let mut sum = elf
-            .split("\n")
-            .map(|n| n.parse().unwrap_or(0))
-            .sum();
+        let mut sum = elf.split("\n").map(|n| n.parse().unwrap_or(0)).sum();
 
         let mut i = 0;
         // insert sorted, shift smaller values to right
