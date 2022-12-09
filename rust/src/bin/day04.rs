@@ -1,11 +1,17 @@
-use std::ops::RangeInclusive;
 use advent2022::input;
+use std::ops::RangeInclusive;
 
-fn contains<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool where T: PartialOrd {
+fn contains<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool
+where
+    T: PartialOrd,
+{
     r1.contains(r2.start()) && r1.contains(r2.end())
 }
 
-fn overlaps<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool where T: PartialOrd {
+fn overlaps<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool
+where
+    T: PartialOrd,
+{
     r1.contains(r2.start()) || r1.contains(r2.end()) || contains(r2, r1)
 }
 
@@ -24,7 +30,10 @@ fn main() {
             let second = rs.next().expect("Malformed");
             first..=second
         });
-        (pair.next().expect("Malformed"), pair.next().expect("Malformed"))
+        (
+            pair.next().expect("Malformed"),
+            pair.next().expect("Malformed"),
+        )
     });
 
     let mut contained = 0;

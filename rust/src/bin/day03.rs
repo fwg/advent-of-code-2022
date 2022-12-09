@@ -17,7 +17,8 @@ fn main() {
 
     // day 3: rucksacks with items that are chars
     // part 1: two equal sized compartments (halves), badge is the one that is in both halves
-    let part1: u32 = input.split("\n")
+    let part1: u32 = input
+        .split("\n")
         .map(|line| {
             let (first, second) = line.split_at(line.len() / 2);
             for x in first.chars() {
