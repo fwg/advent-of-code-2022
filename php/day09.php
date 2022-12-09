@@ -170,13 +170,13 @@ function rope_physics(array $lines, array $rope): int
 
             // move rest of rope
             for ($i = 1; $i < $length; $i++) {
-                while ($rope[$i - 1]->dist($rope[$i]) > 1) {
+                if ($rope[$i - 1]->dist($rope[$i]) > 1) {
                     $rope[$i]->move($rope[$i - 1]->sub($rope[$i])->norm());
-                    if ($rope[$i] === $T) {
-                        $visited[$T.''] = true;
-                    }
                 }
             }
+
+            // mark current tail position as visited
+            $visited[$T.''] = true;
         }
     }
 
