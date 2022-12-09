@@ -1,21 +1,20 @@
 use std::ops::RangeInclusive;
 use advent2022::input;
 
-fn display(r: &RangeInclusive<u32>) -> String {
-    format!("{}-{}", r.start(), r.end())
-}
-
-fn subsumes<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool where T: PartialOrd {
+fn contains<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool where T: PartialOrd {
     r1.contains(r2.start()) && r1.contains(r2.end())
 }
 
 fn overlaps<T>(r1: &RangeInclusive<T>, r2: &RangeInclusive<T>) -> bool where T: PartialOrd {
-    r1.contains(r1.start()) || r1.contains(r2.end()) || subsumes(r2, r1)
+    r1.contains(r2.start()) || r1.contains(r2.end()) || contains(r2, r1)
 }
 
 fn main() {
     let input = input("04");
     let assignments = input.split("\n").map(|line| {
+        if line.is_empty() {
+            return (0..=0, 1..=1);
+        }
         let mut pair = line.split(",").map(|r| {
             let mut rs = r.split("-").map(|i| {
                 i.parse::<u32>()
@@ -28,8 +27,18 @@ fn main() {
         (pair.next().expect("Malformed"), pair.next().expect("Malformed"))
     });
 
-    assignments.take(3).for_each(|(first, second)| {
-        println!("{} - {} = {}", display(&first), display(&second), overlaps(&first, &second));
-        println!("-----");
+    let mut contained = 0;
+    let mut overlapped = 0;
+
+    assignments.for_each(|(first, second)| {
+        if contains(&first, &second) || contains(&second, &first) {
+            contained += 1;
+        }
+        if overlaps(&first, &second) {
+            overlapped += 1;
+        }
     });
+
+    println!("part 1: {}", contained);
+    println!("part 2: {}", overlapped);
 }
