@@ -122,8 +122,8 @@ class Vec {
 $lines = explode("\n", $input);
 // H and T must always be touching, i.e. their distance must be <= 1.
 // They start at the same position, overlapping
-//$rope = [new Vec(), new Vec()];
-//echo "part 1: ", rope_physics($lines, $rope), PHP_EOL;
+$rope = [new Vec(), new Vec()];
+echo "part 1: ", rope_physics($lines, $rope), PHP_EOL;
 
 // part 2: ten knot rope
 $rope = array_map(fn() => new Vec(), array_fill(0, 10, 1));
@@ -162,30 +162,23 @@ function rope_physics(array $lines, array $rope): int
             default: break;
         }
 
-        $m = $movement->mul((int)$match[2]);
-        $H->move($m);
+        $steps = (int)$match[2];
 
-        for ($i = 1; $i < $length; $i++) {
-            while ($rope[$i - 1]->dist($rope[$i]) > 1) {
-                $rope[$i]->move($rope[$i - 1]->sub($rope[$i])->norm());
-                print("\33[2J");
-                echo '----------', PHP_EOL, $m, PHP_EOL;
-                draw(40, 40, $rope, new Vec(20, 20));
-                usleep(350000);
-                if ($rope[$i] === $T) {
-                    $visited[$T.''] = true;
+        for ($step = 0; $step < $steps; $step++) {
+            // move head
+            $H->move($movement);
+
+            // move rest of rope
+            for ($i = 1; $i < $length; $i++) {
+                while ($rope[$i - 1]->dist($rope[$i]) > 1) {
+                    $rope[$i]->move($rope[$i - 1]->sub($rope[$i])->norm());
+                    if ($rope[$i] === $T) {
+                        $visited[$T.''] = true;
+                    }
                 }
             }
         }
-
-//        print("\33[2J");
-//        echo '----------', PHP_EOL, $m, PHP_EOL;
-//        draw(40, 40, $rope, new Vec(20, 20));
-//        drawVisited(30, 30, array_keys($visited), new Vec(15, 15));
-        usleep(2000000);
     }
-
-//    drawVisited(500, 500, array_keys($visited), new Vec(250, 70));
 
     return count(array_keys($visited));
 }
