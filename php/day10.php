@@ -15,6 +15,16 @@ $cycles = ['addx' => 2, 'noop' => 1];
 $cycle = 0;
 
 $X_at = [];
+// 6 row CRT
+$CRT = [
+    array_fill(0, 40, '.'),
+    array_fill(0, 40, '.'),
+    array_fill(0, 40, '.'),
+    array_fill(0, 40, '.'),
+    array_fill(0, 40, '.'),
+    array_fill(0, 40, '.'),
+];
+$CRT_ray = 0;
 
 foreach ($lines as $line) {
     list ($op, $arg) = explode(' ', $line);
@@ -28,6 +38,19 @@ foreach ($lines as $line) {
         if (($cycle - 20) % 40 == 0) {
             $X_at[$cycle] = $X;
         }
+
+        // part 2: draw CRT pixel if X is +1, 0, -1 the current ray pos
+        $pixel = $CRT_ray % 40;
+        $row = floor($CRT_ray / 40);
+
+        if ($pixel == $X || $pixel == $X - 1 || $pixel == $X + 1) {
+            $CRT[$row][$pixel] = '#';
+        } else {
+            $CRT[$row][$pixel] = '.';
+        }
+
+        // advance CRT ray
+        $CRT_ray += 1;
     }
 
     // at end of cycles, op's execution becomes visible in the register X
@@ -42,3 +65,6 @@ foreach ($X_at as $cycle => $x) {
     $signal += $cycle * $x;
 }
 echo "part 1: ", $signal, PHP_EOL;
+
+echo "part 2:", PHP_EOL;
+echo join(PHP_EOL, array_map(fn($row) => join('', $row), $CRT)), PHP_EOL;
