@@ -30,7 +30,12 @@ fn main() {
         }
         // line is expected to be "size file"
         let parts = line.split(" ");
-        let size = parts.take(1).last().expect("Malformed file line!").parse::<u32>().expect("Not a number :(");
+        let size = parts
+            .take(1)
+            .last()
+            .expect("Malformed file line!")
+            .parse::<u32>()
+            .expect("Not a number :(");
         // add file size to all dirs in path hierarchy
         let mut paths = cwd.clone();
         while !paths.is_empty() {
@@ -70,5 +75,4 @@ fn main() {
         }
     }
     println!("part 2: {}", part2_min);
-
 }
