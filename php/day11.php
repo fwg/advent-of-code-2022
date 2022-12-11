@@ -5,9 +5,6 @@ if ((int)$argc > 1 && $argv[1] != "test") {
     $input = trim(file_get_contents(__DIR__ . '/../input/day11.txt'));
 }
 
-// part 2 integer bignums, we need no decimal places
-bcscale(0);
-
 $monkeys = array_map(function ($description) {
     $lines = array_map('trim', explode("\n", $description));
     $monkey = ['Inspected' => 0];
@@ -18,16 +15,16 @@ $monkeys = array_map(function ($description) {
         $v = null;
         switch ($k) {
             case 'Starting items':
-                $v = explode(', ', $parts[1]);
+                $v = array_map('intval', explode(', ', $parts[1]));
                 $k = 'items';
                 break;
             case 'Operation':
                 preg_match('#new = old ([+*]) (old|\d+)#', $parts[1], $match);
-                $v = ['op' => $match[1], 'arg' => $match[2]];
+                $v = ['op' => $match[1], 'arg' => (int)$match[2] ?: $match[2]];
                 break;
             case 'Test':
                 preg_match('#divisible by (\d+)#', $parts[1], $match);
-                $v = $match[1];
+                $v = (int)$match[1];
                 break;
             case 'If true':
             case 'If false':
@@ -61,9 +58,9 @@ function monkey_round(&$monkeys, $with_relief = true, $modulus = 0): void
                 $arg = $worry;
             }
             if ($op == '*') {
-                $worry = bcmul($worry, $arg);
+                $worry = $worry * $arg;
             } else {
-                $worry = bcadd($worry, $arg);
+                $worry = $worry + $arg;
             }
 
             // After each monkey inspects an item but before it tests your worry level,
@@ -71,18 +68,18 @@ function monkey_round(&$monkeys, $with_relief = true, $modulus = 0): void
             // your worry level to be divided by three and rounded down to the nearest
             // integer.
             if ($with_relief) {
-                $worry = bcdiv($worry , '3');
+                $worry = (int)($worry / 3);
             }
 
             // keep worry numbers manageable, as they grow exponentially otherwise
             if ($modulus) {
-                $worry = bcmod($worry, $modulus);
+                $worry = $worry % $modulus;
             }
 
             // Test shows how the monkey uses your worry level to decide where to
             // throw an item next.
             $throw_to = $monkey['If false'];
-            if (bcmod($worry, $monkey['Test']) == 0) {
+            if ($worry % $monkey['Test'] == 0) {
                 $throw_to = $monkey['If true'];
             }
 
