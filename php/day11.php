@@ -47,7 +47,6 @@ function monkey_round(&$monkeys, $with_relief = true, $modulus = 0): void
     foreach ($monkeys as &$monkey) {
         // monkey inspects each item in order
         while (!empty($monkey['items'])) {
-            // part 2: worry is now a string for bcmath!
             $worry = array_shift($monkey['items']);
             $monkey['Inspected'] += 1;
 
@@ -89,10 +88,10 @@ function monkey_round(&$monkeys, $with_relief = true, $modulus = 0): void
     }
 }
 
-function busiest_monkeys($monkeys): array {
+function result($monkeys): int {
     $inspected = array_map(fn($m) => $m['Inspected'], $monkeys);
     rsort($inspected);
-    return [$inspected[0], $inspected[1]];
+    return $inspected[0] * $inspected[1];
 }
 
 $initial_monkeys = $monkeys;
@@ -102,8 +101,7 @@ while ($rounds --> 0) {
     monkey_round($monkeys);
 }
 
-$maxes = busiest_monkeys($monkeys);
-echo "part 1: ", $maxes[0] * $maxes[1], PHP_EOL;
+echo "part 1: ", result($monkeys), PHP_EOL;
 
 // part 2: without worry relief (/3)
 $monkeys = $initial_monkeys;
@@ -119,5 +117,4 @@ while ($rounds --> 0) {
     monkey_round($monkeys, false, $modulus);
 }
 
-$maxes = busiest_monkeys($monkeys);
-echo "part 2: ", $maxes[0] * $maxes[1], PHP_EOL;
+echo "part 2: ", result($monkeys), PHP_EOL;
