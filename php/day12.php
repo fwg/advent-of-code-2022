@@ -38,11 +38,11 @@ if (!($end_point && $start_point)) {
     die("S and E must be defined!");
 }
 
-function path_length(array $map, Point $start_point, Point $end_point): int
+function path_lengths(array $map, array $start_points, Point $end_point): array
 {
     $positions = [$end_point];
     $visited = [$end_point . '' => true];
-    $steps = 0;
+    $steps = array_map(fn($p) => 1, $start_points);
     $directions = [
         ['x' => -1, 'y' => 0],
         ['x' => 1, 'y' => 0],
@@ -51,8 +51,9 @@ function path_length(array $map, Point $start_point, Point $end_point): int
     ];
 
     // go back from end point: move to each viable position
-    while (!isset($visited[$start_point . ''])) {
+    while (!empty(array_filter($start_points, fn($p) => !isset($visited[$p.''])))) {
         $new_positions = [];
+
         foreach ($positions as $point) {
             $h0 = $map[$point->y][$point->x];
             // look into all directions
@@ -76,35 +77,74 @@ function path_length(array $map, Point $start_point, Point $end_point): int
                 if (isset($visited[$p . ''])) {
                     continue;
                 }
-                $new_positions[] = $p;
                 $visited[$p . ''] = true;
+                $new_positions[] = $p;
             }
         }
 
+        // apparently we cannot go anywhere anymore
+        if (empty($new_positions)) {
+            break;
+        }
         // we've taken 1 step in possibly multiple directions
-        $steps += 1;
+        foreach ($start_points as $i => $point) {
+            // but only increase step count for start points we haven't visited
+            if (!isset($visited[$point . ''])) {
+                $steps[$i] += 1;
+            }
+        }
         $positions = $new_positions;
+
+        // draw_visited_map($map, $visited);
+        // usleep(10000);
+    }
+
+    // set all unvisited starting point steps to basically infinity
+    foreach ($start_points as $i => $point) {
+        if (!isset($visited[$point . ''])) {
+            $steps[$i] = PHP_INT_MAX;
+        }
     }
 
     return $steps;
 }
 
+function draw_visited_map($map, $visited): void
+{
+    echo "\33[2J";
+    foreach ($map as $y => $row) {
+        foreach ($row as $x => $cell) {
+            if (isset($visited[$x . ',' . $y])) {
+                echo '#';
+            } else {
+                echo '.';
+            }
+        }
+        echo "\n";
+    }
+}
+
 // part 1: find path length from S to E
-echo "part 1: ", path_length($map, $start_point, $end_point), PHP_EOL;
+echo "part 1: ", path_lengths($map, [$start_point], $end_point)[0], PHP_EOL;
 
 // part 2: find shortest path from all points in the map at h=0
-$min = PHP_INT_MAX;
+$starting_points = [];
 foreach ($map as $y => $row) {
     foreach ($row as $x => $h) {
         if ($h > 0) {
             continue;
         }
         $p = new Point($x, $y);
-        $l = path_length($map, $p, $end_point);
-        echo "part 2 starting from {$p} reaching E in {$l} steps\n";
-        if ($l < $min) {
-            $min = $l;
-        }
+        $starting_points[] = $p;
+    }
+}
+
+$paths = path_lengths($map, $starting_points, $end_point);
+$min = PHP_INT_MAX;
+
+foreach ($paths as $i => $steps) {
+    if ($steps < $min) {
+        $min = $steps;
     }
 }
 
