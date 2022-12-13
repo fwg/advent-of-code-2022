@@ -63,7 +63,7 @@ function packet_order_correct($p1, $p2): Result {
 }
 
 // packet pairs
-$packets = array_map(
+$packet_pairs = array_map(
     fn($pair) => array_map('json_decode', explode("\n", $pair)),
     explode("\n\n", $input)
 );
@@ -74,7 +74,7 @@ $packets = array_map(
 $sum_right = 0;
 $index = 1;
 
-foreach ($packets as $pair) {
+foreach ($packet_pairs as $pair) {
     $sum_right += match (packet_order_correct($pair[0], $pair[1])) {
         Result::Right => $index,
         default => 0,
@@ -83,3 +83,30 @@ foreach ($packets as $pair) {
 }
 
 echo "part 1: ", $sum_right, PHP_EOL;
+
+// part 2:
+// put all packets in the correct order.
+// new divider packets to find after sorting
+$packets = [
+    [[2]],
+    [[6]],
+];
+foreach ($packet_pairs as $pair) {
+    $packets[] = $pair[0];
+    $packets[] = $pair[1];
+}
+usort($packets, fn($p1, $p2) => match (packet_order_correct($p1, $p2)) {
+    Result::Right => -1,
+    Result::Wrong => 1,
+    Result::Maybe => 0,
+});
+// we're lazy
+$encoded = array_map('json_encode', $packets);
+$div1 = -1;
+$div2 = -1;
+foreach ($encoded as $i => $ep) {
+    if ($ep === '[[2]]') $div1 = $i + 1;
+    if ($ep === '[[6]]') $div2 = $i + 1;
+}
+
+echo "part 2: ", $div1 * $div2, PHP_EOL;
