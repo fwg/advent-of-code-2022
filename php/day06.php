@@ -1,10 +1,8 @@
 <?php
-$input = str_split(<<<TEST
-mjqjpqmgbljsphdztnvjfqwrcgsmlb
-TEST);
+$input = trim(file_get_contents(__DIR__ . '/../input/day06.test.txt'));
 
-if ($argc > 1) {
-    $input = str_split(trim(file_get_contents(__DIR__ . '/../input/day06.txt')));
+if ((int)$argc > 1 && $argv[1] != "test") {
+    $input = trim(file_get_contents(__DIR__ . '/../input/day06.txt'));
 }
 
 $len = count($input);

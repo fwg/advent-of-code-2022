@@ -1,19 +1,12 @@
 <?php
-$input = explode("\n", <<<TEST
-vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw
-TEST);
-$input = array_filter(
-    explode("\n", file_get_contents(__DIR__ . '/../input/day03.txt')),
-    fn($line) => !empty($line)
-);
+$input = explode("\n", trim(file_get_contents(__DIR__ . '/../input/day03.test.txt')));
+
+if ((int)$argc > 1 && $argv[1] != "test") {
+    $input = explode("\n", trim(file_get_contents(__DIR__ . '/../input/day03.txt')));
+}
 
 // hint: read this inside out
-/** @var string[][][] */
+/** @var string[][][] $rucksacks */
 $rucksacks = array_map(fn($line) => array_map(
     // 3. flip indexes and characters to make a "look-up map" with the
     // original position in the rucksack string as the value

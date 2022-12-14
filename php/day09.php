@@ -1,29 +1,11 @@
 <?php
-$input = <<<TEST
-R 4
-U 4
-L 3
-D 1
-R 4
-D 1
-L 5
-R 2
-TEST;
 
-if ((int)$argc > 1 && $argv[1] == 2) {
-    $input = <<<TEST2
-R 5
-U 8
-L 8
-D 3
-R 17
-D 10
-L 25
-U 20
-TEST2;
+$input = trim(file_get_contents(__DIR__ . '/../input/day09.test.txt'));
+
+if ((int)$argc > 1 && $argv[1] === "test2") {
+    $input = trim(file_get_contents(__DIR__ . '/../input/day09.test2.txt'));
 }
-
-if ((int)$argc > 1 && $argv[1] != 2) {
+if ((int)$argc > 1 && $argv[1] != "test" && $argv[1] != "test2") {
     $input = trim(file_get_contents(__DIR__ . '/../input/day09.txt'));
 }
 

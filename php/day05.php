@@ -1,18 +1,8 @@
 <?php
-$input = explode("\n\n", <<<TEST
-    [D]
-[N] [C]
-[Z] [M] [P]
- 1   2   3
+$input = explode("\n\n", trim(file_get_contents(__DIR__ . '/../input/day05.test.txt')));
 
-move 1 from 2 to 1
-move 3 from 1 to 3
-move 2 from 2 to 1
-move 1 from 1 to 2
-TEST);
-
-if ($argc > 1) {
-    $input = explode("\n\n", file_get_contents(__DIR__ . '/../input/day05.txt'));
+if ((int)$argc > 1 && $argv[1] != "test") {
+    $input = explode("\n\n", trim(file_get_contents(__DIR__ . '/../input/day05.txt')));
 }
 
 $stackLines = explode("\n", $input[0]);

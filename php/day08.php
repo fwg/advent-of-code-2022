@@ -1,13 +1,7 @@
 <?php
-$input = <<<TEST
-30373
-25512
-65332
-33549
-35390
-TEST;
+$input = trim(file_get_contents(__DIR__ . '/../input/day08.test.txt'));
 
-if ((int)$argc > 1) {
+if ((int)$argc > 1 && $argv[1] != "test") {
     $input = trim(file_get_contents(__DIR__ . '/../input/day08.txt'));
 }
 

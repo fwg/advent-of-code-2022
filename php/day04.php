@@ -1,18 +1,8 @@
 <?php
-$input = explode("\n", <<<TEST
-2-4,6-8
-2-3,4-5
-5-7,7-9
-2-8,3-7
-6-6,4-6
-2-6,4-8
-TEST);
+$input = explode("\n", trim(file_get_contents(__DIR__ . '/../input/day04.test.txt')));
 
-if ($argc > 1) {
-    $input = array_filter(
-        explode("\n", file_get_contents(__DIR__ . '/../input/day04.txt')),
-        fn ($line) => !empty($line)
-    );
+if ((int)$argc > 1 && $argv[1] != "test") {
+    $input = explode("\n", trim(file_get_contents(__DIR__ . '/../input/day04.txt')));
 }
 
 $assignments = array_map(
