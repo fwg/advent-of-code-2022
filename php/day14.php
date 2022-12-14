@@ -41,18 +41,46 @@ foreach ($rocks as $trace) {
     }
 }
 
-
-
 $sand_count = 0;
 $from = [500, 0];
 
-while (($settled_at = drop_sand($cave, $from))) {
-    $cave[$settled_at[1]][$settled_at[0]] = 'o';
+$cave1 = $cave;
+
+while (($settled_at = drop_sand($cave1, $from))) {
+    $cave1[$settled_at[1]][$settled_at[0]] = 'o';
     $sand_count += 1;
 }
 
 // draw_cave($cave, $max_x - $min_x + 3, $max_y + 2, $min_x - 2, 0);
 echo "part 1: ", $sand_count, PHP_EOL;
+
+$cave2 = $cave;
+// draw 'infinite' bedrock at base of triangle with 500,0 being the tip
+$h = $max_y + 2;
+
+draw_rocks(
+    $cave2,
+    [500 - $h, $h],
+    [500 + $h, $h]
+);
+
+// fill with air above bedrock
+for ($y = 0; $y < $h; $y++) {
+    for ($x = 500 - $h; $x <= 500 + $h; $x++) {
+        if (($cave2[$y][$x] ?? ' ') == ' ') {
+            $cave2[$y][$x] = '.';
+        }
+    }
+}
+
+$sand_count = 0;
+while (($settled_at = drop_sand($cave2, $from))) {
+    $cave2[$settled_at[1]][$settled_at[0]] = 'o';
+    $sand_count += 1;
+}
+
+// draw_cave($cave2, 2 * $h + 1, $h + 2, 500 - $h, 0);
+echo "part 2: ", $sand_count, PHP_EOL;
 
 function drop_sand($cave, $from): ?array
 {
